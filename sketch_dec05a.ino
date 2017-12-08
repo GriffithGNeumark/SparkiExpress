@@ -310,6 +310,7 @@ void setup() {
   //find xy of goal
   Xg=itox(go_to[pos]);
   Yg=itoy(go_to[pos]);
+  releaseObject();
 }
 
 void loop() {
@@ -342,7 +343,7 @@ void loop() {
   {
     //followLine(true); // aproximates to the detected object, but always centered on the black line
     movement();
-    if ((ping <= objectDistance)) // if the object is so close, stop the robot
+    if ((ping <= objectDistance) && (!gotmail)) // if the object is so close, stop the robot
     {
       gripObject();
       gotmail = true;
