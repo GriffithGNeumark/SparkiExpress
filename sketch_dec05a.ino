@@ -299,6 +299,15 @@ void movement() {
       Thetai=Thetai+Thetardot*0.1;
 }
 
+void finished()
+{
+  //tells the user that the work is done:
+  state = "finished";
+  sparki.gripperStop();
+  sparki.moveStop();
+  showSensorsAndState();
+}
+
 void setup() {
   
    sparki.servo(SERVO_CENTER); // rotate the servo to is 0 degree postion (forward)
@@ -354,11 +363,17 @@ void loop() {
   {
     //followLine(false);
     movement();
+    state ="moving";
   }
 
   if(isDone)
   {
     releaseObject();
+    objectIndex++;
+    if(objectIndex == maxObjects)
+    {
+    finished();
+    }
   }
   showSensorsAndState();
 
