@@ -50,7 +50,7 @@ int nextSave;
 float maxspeed=0.0285;    // [m/s] speed of the robot that you measured
 float alength=0.0851;     // [m] axle length  
 float phildotr=0, phirdotr=0; // wheel speeds that you sent to the motors
-float Xi=0, Yi=0, Thetai=0; // where the robot is in the world
+float Xi=0.05, Yi=0.05, Thetai=0; // where the robot is in the world
 float Xrdot, Thetardot;    // how fast the robot moves in its coordinate system
 
 float Xg;     // Where the robot should go
@@ -223,6 +223,18 @@ void movement() {
   
       // SET WHEELSPEED
 
+  if(phildotr>maxspeed){
+   phildotr=maxspeed;
+  }
+  else if(phildotr<-maxspeed){
+    phildotr=-maxspeed;
+  }
+  if(phirdotr>maxspeed){
+    phirdotr=maxspeed;
+  } else if(phirdotr<-maxspeed){
+    phirdotr=-maxspeed;
+  }
+
       float leftspeed = abs(phildotr);
       float rightspeed = abs(phirdotr);
 
@@ -330,7 +342,7 @@ void loop() {
   {
     //followLine(true); // aproximates to the detected object, but always centered on the black line
     movement();
-    if (ping <= objectDistance) // if the object is so close, stop the robot
+    if ((ping <= objectDistance)) // if the object is so close, stop the robot
     {
       gripObject();
       gotmail = true;
