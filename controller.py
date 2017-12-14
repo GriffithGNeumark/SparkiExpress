@@ -4,20 +4,11 @@ import time
 
 class Sparki:
 
-	SERVO_CENTER = 0
-	SERVO_LEFT = 90
-	SERVO_RIGHT = -90
-	
-	STATUS_OK = struct.pack('!B',0)
-	MOVE_FORWARD = struct.pack('!B',1)
-	MOVE_BACKWARD = struct.pack('!B',2)
-	MOVE_LEFT = struct.pack('!B',3)
-	MOVE_RIGHT = struct.pack('!B',4)
-	SERVO = struct.pack('!B',5)
-	REQ_PING = struct.pack('!B',6)
-	REQ_WHEELS = struct.pack('!B',7)
-	MOVE_STOP = struct.pack('!B',8)
-	REQ_LINESENS = struct.pack('!B',9)
+	START = struct.pack('!B',0)
+	SPOT2 = struct.pack('!B',1)
+	SPOT3 = struct.pack('!B',2)
+	SPOT4 = struct.pack('!B',3)
+	SPOT1 = struct.pack('!B',4)
 
 	portName = None
 	serialPort = None
@@ -41,7 +32,6 @@ class Sparki:
 		# Can throw ValueErrors on failure
 		if (self.serialPort.isOpen()):
 			print "Connected"
-			self.servo(self.SERVO_CENTER)
 			return True
 		else:
 			return False
@@ -52,35 +42,25 @@ class Sparki:
 		if (self.serialPort.isClosed()):
 			print "Disconnected"
 	
-	def moveForward(self):
+	def start(self):
 		# Should be open port
-		self.serialPort.write(self.MOVE_FORWARD)
+		self.serialPort.write(self.START)
 	
-	def moveBackward(self):
+	def moveSpot2(self):
 		# Should be open port
-		self.serialPort.write(self.MOVE_BACKWARD)
+		self.serialPort.write(self.SPOT2)
 	
-	def moveLeft(self):
+	def moveSpot3(self):
 		# Should be open port
-		self.serialPort.write(self.MOVE_LEFT)
+		self.serialPort.write(self.SPOT3)
 	
-	def moveRight(self):
+	def moveSpot4(self):
 		# Should be open port
-		self.serialPort.write(self.MOVE_RIGHT)
+		self.serialPort.write(self.SPOT4)
 	
-	def moveStop(self):
+	def moveSpot1(self):
 		# Should be open port
-		self.serialPort.write(self.MOVE_STOP)
-	
-	def servo(self, angle):
-		# Should be open port
-		# Should check angle to be int
-		if (angle < -90 or angle > 90):
-			print "Invalid servo angle" #Should append angle
-			return
-		angle = -1*(angle) + 90
-		self.serialPort.write(self.SERVO)
-		self.serialPort.write(struct.pack('!B',angle))
+		self.serialPort.write(self.SPOT1)
 	
 	"""
 	Returns an int of the ping value or -1
@@ -91,33 +71,6 @@ class Sparki:
 		self.serialPort.write(self.REQ_PING)
 		distance = int(self.readString())
 		return distance
-	
-	"""
-	Returns a list of ints for the travel of the two motors
-	"""
-	def totalTravel(self):
-		# Should be open port
-		values = [0,0]
-		self.serialPort.write(self.REQ_WHEELS)
-		retValues = self.readString().split()
-		values[0] = int(retValues[0])
-		values[1] = int(retValues[1])
-		return values
-	
-	"""
-	Returns a list of the line sensor data
-	"""
-	def lineSense(self):
-		# Should be open port
-		values = [0,0,0,0,0]
-		self.serialPort.write(self.REQ_LINESENS)
-		retValues = self.readString().split()
-		values[0] = int(retValues[0])
-		values[1] = int(retValues[1])
-		values[2] = int(retValues[2])
-		values[3] = int(retValues[3])
-		values[4] = int(retValues[4])
-		return values
 	
 	"""
 	Reads return strings from Sparki that EOL with '*'
@@ -139,6 +92,12 @@ class Sparki:
 		# Should validate time is int in milliseconds
 		time.sleep(time/1000)
 		
-sparki2 = Sparki("COM12")
+sparki2 = Sparki("COM9")
 sparki2.connect()
-print(sparki2.ping())
+#print(sparki2.ping())
+sparki2.moveSpot3()
+sparki2.moveSpot1()
+#start can be missed due to latency, must be repeated
+sparki2.start()
+sparki2.start()
+sparki2.start()

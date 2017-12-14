@@ -19,6 +19,9 @@
 #define MOVE_STOP 8
 #define REQ_LINESENS 9
 
+byte opArray[10];
+int freepos = 0;
+
 void setup()
 {
   Serial1.begin(9600);
